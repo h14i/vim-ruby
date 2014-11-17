@@ -587,7 +587,7 @@ class VimRubyCompletion
 # {{{ main completion code
   def self.preload_rails
     a = VimRubyCompletion.new
-    require 'Thread'
+    require 'thread'
     Thread.new(a) do |b|
       begin
       b.load_rails
