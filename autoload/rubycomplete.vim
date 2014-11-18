@@ -259,7 +259,7 @@ class VimRubyCompletion
     nums.each do |x|
       ln = buf[x]
       begin
-        eval( "require %s" % $1 ) if /.*require\s*(.*)$/.match( ln )
+         require "#{$1}" if /.*require\s*(.*)$/.match( ln )
       rescue Exception
         #ignore?
       end
@@ -399,7 +399,7 @@ class VimRubyCompletion
     eob = buf.length
     ret = []
     rg = 1..eob
-    re = eval( "/^\s*%s\s*([A-Za-z0-9_:-]*)(\s*<\s*([A-Za-z0-9_:-]*))?\s*/" % type )
+    re = /^\s*#{type}\s*([A-Za-z0-9_:-]*)(\s*<\s*([A-Za-z0-9_:-]*))?\s*/
 
     rg.each do |x|
       if re.match( buf[x] )
@@ -610,7 +610,7 @@ class VimRubyCompletion
       load_rails
     end
 
-    want_gems = VIM::evaluate("get(g:, 'rubycomplete_load_gemfile')")
+    want_gems = VIM::evaluate("get(g:, 'rubycomplete_load_gemfile') && g:rubycomplete_load_gemfile")
     load_gems unless want_gems.to_i.zero?
     
 
@@ -701,7 +701,7 @@ class VimRubyCompletion
         message = Regexp.quote($3)
         load_buffer_class( receiver )
 
-        cv = eval("self.class.constants")
+        cv = self.class.constants
         vartype = get_var_type( receiver )
         dprint "vartype: %s" % vartype
         if vartype != ''
@@ -771,7 +771,7 @@ class VimRubyCompletion
 
         cls_const = Class.constants
         constants = cls_const.select { |c| /^[A-Z_-]+$/.match( c ) }
-        classes = eval("self.class.constants") - constants
+        classes = self.class.constants - constants
         classes += get_buffer_classes
         classes += get_buffer_modules
 
